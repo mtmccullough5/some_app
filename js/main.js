@@ -11,7 +11,7 @@ $(document).ready(function(){
             case "quarterly":
                 priceText = "$25.00 /mo";
                 break;
-            case "Yearly":
+            case "yearly":
                 priceText = "$20.00 /mo";
                 break;
         }
@@ -22,8 +22,33 @@ $(document).ready(function(){
         var installment = plan.val();
         var price = $('#price').text();
         var inCart = $('#incart');
-        inCart.append('<li>' + installment + '-' + price + '</li>');
+        var numeric = price.replace(/[[A-Za-z$\/\s]/g, '');
+        var data = 'data-price="' + numeric + '" data-plan="'+ installment +'"';
+        inCart.append('<li class="entry"' + data + '>' + installment + '-' + price + '</li>');
+        updateTotal();
     });
+
+    function updateTotal() {
+        var total = 0;
+        $('.entry').each( function(index,entry){
+            var data = $(entry).data();
+            var price = parseFloat(data.price)
+            var installement = data.plan;
+            switch (installement) {
+                case "monthly":
+                    total += price;    
+                    break;
+                case "quarterly":
+                    total += price * 3;
+                    break;
+                case "yearly":
+                    total += price *12;
+                    break;
+            }
+            $('#carttotal').text('$' + total)
+            console.log(data)
+        })
+    }
 
 });
 
